@@ -1,0 +1,601 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff0f5;
+    margin: 0;
+    padding: 0;
+    color: #333;
+}
+
+header {
+    background-color: #6a0dad;
+    color: white;
+    text-align: center;
+    padding: 1rem 0 1.5rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+header h1 {
+    margin: 0.5rem 0 0 0;
+    font-size: 2rem;
+}
+
+.logo {
+    width: 80px;
+    height: auto;
+    border-radius: 12px;
+}
+
+.carrinho {
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+
+.filtros {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.filtros button {
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #9b30ff;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+.filtros button:hover {
+    background-color: #7a1fbf;
+}
+
+.categoria {
+    margin: 1rem;
+    padding: 1rem;
+    background-color: #f8e1ff;
+    border-radius: 12px;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+h2 {
+    border-bottom: 2px solid #6a0dad;
+    padding-bottom: 0.5rem;
+    color: #6a0dad;
+    text-align: center;
+    
+}
+
+/* Lista de itens */
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 auto; /* centraliza o ul */
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; /* centraliza os cards */
+    gap: 1rem;
+    width: 100%;
+}
+
+li {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    width: 200px;
+    background-color: #fff0ff;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    flex-shrink: 0; /* impede que os cards encolham ao filtrar */
+}
+
+
+li:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+li img {
+    width: 100px;
+    height: 100px;
+    border-radius: 12px;
+    object-fit: cover;
+    transition: transform 0.2s;
+}
+
+li img:hover {
+    transform: scale(1.5);
+    z-index: 10;
+    position: relative;
+}
+
+.nome {
+    font-weight: 500;
+    margin-top: 0.5rem;
+}
+
+.preco {
+    font-weight: bold;
+    margin-top: 0.25rem;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 50;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 1rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.fechar {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#finalizar {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background-color: #6a0dad;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#finalizar:hover {
+    background-color: #7a1fbf;
+}
+
+.removerItem {
+    margin-left: 0.5rem;
+    color: red;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    li {
+        width: 80%;
+    }
+
+    li img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .logo {
+        width: 70px;
+    }
+}
+
+/* Esconder título da categoria quando filtrado */
+.categoria h2.escondido {
+    display: none;
+}
+
+.categoria h2 {
+    display: none;
+}
+
+/* =============================
+   Estilo avançado do botão "Adicionar ao Carrinho"
+   ============================= */
+#btnAdicionarModal {
+    margin-top: 1rem;
+    padding: 0.75rem 1.5rem 0.75rem 2.5rem; /* espaço para ícone */
+    background: linear-gradient(90deg, #9b30ff, #6a0dad);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+#btnAdicionarModal::before {
+    content: '🛒';
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    transition: transform 0.3s ease;
+}
+
+#btnAdicionarModal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0,0,0,0.4);
+}
+
+#btnAdicionarModal:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+#btnAdicionarModal::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: rgba(255,255,255,0.15);
+    transform: rotate(45deg) translate(-100%, -100%);
+    transition: all 0.5s ease;
+}
+
+#btnAdicionarModal:hover::after {
+    transform: rotate(45deg) translate(100%, 100%);
+}
+
+/* Animação de “pulso” ao adicionar */
+#btnAdicionarModal.pulse {
+    animation: pulse 0.3s ease;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+/* Modal de Cadastro */
+#modalCadastro .modal-content {
+    background: #fff;
+    border-radius: 15px;
+    padding: 2rem;
+    max-width: 400px;
+    margin: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+#modalCadastro h2 {
+    color: #4B004B; /* cor de açaí */
+    margin-bottom: 1rem;
+    font-size: 1.4rem;
+}
+
+#modalCadastro label {
+    display: block;
+    text-align: left;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    color: #333;
+}
+
+#modalCadastro input,
+#modalCadastro select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    font-size: 1rem;
+}
+
+#modalCadastro input:focus,
+#modalCadastro select:focus {
+    outline: none;
+    border-color: #7A297A; /* tom roxo mais claro */
+    box-shadow: 0 0 5px rgba(122, 41, 122, 0.5);
+}
+
+/* Botões do cadastro */
+#modalCadastro button {
+    width: 48%;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#modalCadastro button:first-of-type {
+    background: #ccc;
+    color: #333;
+}
+
+#modalCadastro button:last-of-type {
+    background: #4B004B;
+    color: white;
+    font-weight: bold;
+}
+
+#modalCadastro button:hover {
+    opacity: 0.9;
+}
+/* Controle de quantidade */
+.quantidade {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem 0;
+  gap: 10px;
+}
+
+.quantidade button {
+  width: 35px;
+  height: 35px;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background: #4B004B;
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.quantidade button:hover {
+  background: #6A006A;
+}
+
+.quantidade span {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 20px;
+  text-align: center;
+}
+.qtd-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.qtd-container button {
+  background: #800080; /* cor do açaí */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  margin: 0 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.2s;
+}
+
+.qtd-container button:hover {
+  background: #550055;
+}
+
+#qtdAtual {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+/* Lista de itens no carrinho */
+#itensCarrinho {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#itensCarrinho li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #ddd;
+    border-radius: 8px;
+    background-color: #fafafa;
+    font-size: 14px;
+}
+
+#itensCarrinho li span.removerItem {
+    cursor: pointer;
+    margin-left: 10px;
+    color: red;
+    font-weight: bold;
+}
+
+.quantidadeCarrinho {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.quantidadeCarrinho button {
+    width: 24px;
+    height: 24px;
+    border: none;
+    border-radius: 50%;
+    background-color: #6b1f6a; /* cor do açaí */
+    color: white;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.quantidadeCarrinho span {
+    min-width: 20px;
+    text-align: center;
+}
+.filtros-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  margin: 1rem 0;
+}
+
+.filtros {
+  display: flex;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.filtros button {
+  flex: 0 0 auto;
+  margin: 0 0.25rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background-color: #f3f3f3;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.scroll-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  user-select: none;
+}
+
+.scroll-btn.left {
+  margin-right: 0.25rem;
+}
+
+.scroll-btn.right {
+  margin-left: 0.25rem;
+}
+/* Container dos filtros */
+.filtros {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 0 2rem; /* espaço para setas */
+    position: relative;
+}
+
+/* Botões de filtro */
+.filtros button {
+    flex: 0 0 auto;
+    margin: 0 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #6a1b9a; /* cor do açaí */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Setas laterais */
+.seta {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    background-color: rgba(0,0,0,0.3);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Seta esquerda */
+.seta-esquerda {
+    left: 5px;
+}
+
+/* Seta direita */
+.seta-direita {
+    right: 5px;
+}
+
+/* Removido efeito de hover para sempre visível */
+/* .seta:hover { opacity: 1; } */
+
+/* Scroll suave no mobile */
+.filtros::-webkit-scrollbar {
+    display: none;
+}
+#adicionaisContainer {
+    display: block;
+    margin-top: 15px;
+}
+
+#adicionaisLista {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 250px; /* rolagem se tiver muitos adicionais */
+    overflow-y: auto;
+}
+
+.adicionalItemLi {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid #ddd;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.adicionalItemLi:hover {
+    background-color: #ffe6e6; /* leve destaque ao passar o mouse */
+}
+
+.nomeAdicional {
+    font-weight: 500;
+}
+
+.qtdContainer {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btnQtd {
+    width: 28px;
+    height: 28px;
+    border: none;
+    background-color: #ff5c5c;
+    color: #fff;
+    font-weight: bold;
+    font-size: 18px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btnQtd:hover {
+    background-color: #ff1c1c;
+}
+
+.qtd {
+    min-width: 20px;
+    text-align: center;
+    font-weight: bold;
+}
