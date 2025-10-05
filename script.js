@@ -245,48 +245,53 @@ function finalizarPedido() {
 // ----------------------
 // Cadastro do cliente
 // ----------------------
-function fecharCadastro() {
-    document.getElementById('modalCadastro').style.display = 'none';
-}
-
 function enviarCadastro() {
     const nome = document.getElementById('nomeCliente').value;
     const endereco = document.getElementById('enderecoCliente').value;
+    const telefone = document.getElementById('telefoneCliente').value;
     const pagamento = document.getElementById('pagamentoCliente').value;
+    const precisaTroco = document.getElementById('trocoCliente').checked;
+    const valorTroco = parseFloat(document.getElementById('valorTroco').value) || 0;
 
-    if(!nome || !endereco) {
-        alert("Preencha todos os campos!");
+    if (!nome || !endereco || !telefone) {
+        alert("Preencha todos os campos obrigatórios!");
         return;
     }
 
-    let mensagem = `*Pedido do(a) ${nome}*\nEndereço: ${endereco}\nPagamento: ${pagamento}\n\nItens:\n`;
+    let mensagem = `*Pedido do(a) ${nome}*\nEndereço: ${endereco}\nTelefone: ${telefone}\nPagamento: ${pagamento}\n`;
+    if (precisaTroco) mensagem += `Troco para: R$ ${valorTroco.toFixed(2)}\n`;
+    mensagem += `\nItens:\n`;
+
     let subtotal = 0;
 
     carrinho.forEach(item => {
         let precoItem = item.precoBase;
         let adicionaisText = "";
-        for(let ad in item.adicionais) {
+        for (let ad in item.adicionais) {
             const precoAd = adicionais.find(a => a.nome === ad).preco;
             precoItem += precoAd * item.adicionais[ad];
             adicionaisText += `${ad} x${item.adicionais[ad]}, `;
         }
-        if(adicionaisText) adicionaisText = " (" + adicionaisText.slice(0, -2) + ")";
+        if (adicionaisText) adicionaisText = " (" + adicionaisText.slice(0, -2) + ")";
         const totalItem = precoItem * item.qtd;
         subtotal += totalItem;
         mensagem += `- ${item.nome} x${item.qtd}${adicionaisText} - R$ ${totalItem.toFixed(2)}\n`;
     });
 
-    // Taxa fixa de entrega
-    const taxaEntrega = 7;
-    const total = subtotal + taxaEntrega;
-    mensagem += `\nTaxa de entrega: R$ ${taxaEntrega.toFixed(2)}`;
-    mensagem += `\n*Total: R$ ${total.toFixed(2)}*`;
+    // Calcular troco
+    let totalFinal = subtotal;
+    if (precisaTroco && valorTroco > subtotal) {
+        const trocoCalculado = valorTroco - subtotal;
+        mensagem += `\nSubtotal: R$ ${subtotal.toFixed(2)}\nTroco: R$ ${trocoCalculado.toFixed(2)}`;
+        totalFinal = valorTroco;
+    } else {
+        mensagem += `\nTotal: R$ ${subtotal.toFixed(2)}`;
+    }
 
-    const whatsapp = `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${encodeURIComponent(mensagem)}`;
-    window.open(whatsapp, "_blank");
+    // Aqui você poderia enviar a mensagem para o WhatsApp, por exemplo:
+    console.log(mensagem);
 
-    carrinho = [];
-    atualizarCarrinho();
+    // Fecha o modal
     fecharCadastro();
 }
 
@@ -306,3 +311,4 @@ function pegarLocalizacao() {
         alert("Seu navegador não suporta geolocalização.");
     }
 }
+
