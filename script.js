@@ -12,8 +12,8 @@ let clienteLon = null;
 const numeroLoja = "+556692566903"; // substitua pelo seu número com DDI + DDD + número
 
 // Localização da loja
-const lojaLat = -15.8697; // latitude da loja
-const lojaLon = -52.3491; // longitude da loja
+const lojaLat = -15.8697;
+const lojaLon = -52.3491;
 
 // Lista de adicionais
 const adicionais = [
@@ -62,9 +62,7 @@ function abrirDetalhes(item) {
     const preco = parseFloat(item.querySelector('.preco').textContent.replace('R$', '').replace(',', '.'));
     document.getElementById("modalPreco").textContent = preco.toFixed(2);
 
-    const categoria = item.closest('.categoria').dataset.categoria;
-    const adicionaisContainer = document.getElementById('adicionaisContainer');
-    adicionaisContainer.style.display = 'block';
+    document.getElementById('adicionaisContainer').style.display = 'block';
     carregarAdicionais();
 
     document.getElementById("modalItem").style.display = 'block';
@@ -79,7 +77,7 @@ function fecharModalItem() {
 // ----------------------
 function alterarQtd(valor) {
     qtdAçai += valor;
-    if(qtdAçai < 1) qtdAçai = 1;
+    if (qtdAçai < 1) qtdAçai = 1;
     document.getElementById("qtdAtual").textContent = qtdAçai;
 }
 
@@ -110,7 +108,7 @@ function carregarAdicionais() {
 
 function alterarQtdAdicional(nome, valor) {
     adicionaisSelecionados[nome] += valor;
-    if(adicionaisSelecionados[nome] < 0) adicionaisSelecionados[nome] = 0;
+    if (adicionaisSelecionados[nome] < 0) adicionaisSelecionados[nome] = 0;
     document.getElementById("qtd_" + nome).textContent = adicionaisSelecionados[nome];
 }
 
@@ -145,12 +143,10 @@ function animarItemParaCarrinho(itemImg) {
     }, 710);
 }
 
-
 // ----------------------
 // Carrinho
 // ----------------------
 document.getElementById("btnAdicionarModal").onclick = function() {
-    // Aqui pegamos a imagem do item atual e animamos
     const itemImg = itemAtual.querySelector('img');
     animarItemParaCarrinho(itemImg);
 
@@ -158,15 +154,14 @@ document.getElementById("btnAdicionarModal").onclick = function() {
     const precoBase = parseFloat(document.getElementById("modalPreco").textContent);
 
     const adicionaisDoItem = {};
-    for(let key in adicionaisSelecionados) {
-        if(adicionaisSelecionados[key] > 0) adicionaisDoItem[key] = adicionaisSelecionados[key];
+    for (let key in adicionaisSelecionados) {
+        if (adicionaisSelecionados[key] > 0) adicionaisDoItem[key] = adicionaisSelecionados[key];
     }
 
     carrinho.push({ nome, precoBase, qtd: qtdAçai, adicionais: adicionaisDoItem });
     atualizarCarrinho();
     fecharModalItem();
-}
-
+};
 
 function atualizarCarrinho() {
     const itensCarrinho = document.getElementById("itensCarrinho");
@@ -177,12 +172,12 @@ function atualizarCarrinho() {
         let precoItem = item.precoBase;
         let adicionaisText = "";
 
-        for(let ad in item.adicionais) {
+        for (let ad in item.adicionais) {
             const precoAd = adicionais.find(a => a.nome === ad).preco;
             precoItem += precoAd * item.adicionais[ad];
             adicionaisText += `${ad} x${item.adicionais[ad]}, `;
         }
-        if(adicionaisText) adicionaisText = "(" + adicionaisText.slice(0, -2) + ")";
+        if (adicionaisText) adicionaisText = "(" + adicionaisText.slice(0, -2) + ")";
 
         const totalItem = precoItem * item.qtd;
         total += totalItem;
@@ -213,7 +208,7 @@ function fecharCarrinho() {
 // Finalizar pedido
 // ----------------------
 function finalizarPedido() {
-    if(carrinho.length === 0) {
+    if (carrinho.length === 0) {
         alert("Carrinho vazio!");
         return;
     }
@@ -222,19 +217,18 @@ function finalizarPedido() {
     let subtotal = 0;
     carrinho.forEach(item => {
         let precoItem = item.precoBase;
-        for(let ad in item.adicionais) {
+        for (let ad in item.adicionais) {
             const precoAd = adicionais.find(a => a.nome === ad).preco;
             precoItem += precoAd * item.adicionais[ad];
         }
         subtotal += precoItem * item.qtd;
     });
 
-    const taxaEntrega = 7; // taxa fixa
+    const taxaEntrega = 7;
     const total = subtotal + taxaEntrega;
 
-    // Mostra valor total já incluindo taxa
     const totalModal = document.getElementById('totalPedidoFinal');
-    if(totalModal) {
+    if (totalModal) {
         totalModal.textContent = `Subtotal: R$ ${subtotal.toFixed(2)}\nTaxa de entrega: R$ ${taxaEntrega.toFixed(2)}\nTotal: R$ ${total.toFixed(2)}`;
     }
 
@@ -252,35 +246,46 @@ function fecharCadastro() {
 function enviarCadastro() {
     const nome = document.getElementById('nomeCliente').value;
     const endereco = document.getElementById('enderecoCliente').value;
+    const telefone = document.getElementById('telefoneCliente').value;
     const pagamento = document.getElementById('pagamentoCliente').value;
+    const precisaTroco = document.getElementById('trocoCliente').checked;
+    const valorTroco = parseFloat(document.getElementById('valorTroco').value) || 0;
 
-    if(!nome || !endereco) {
-        alert("Preencha todos os campos!");
+    if (!nome || !endereco || !telefone) {
+        alert("Preencha todos os campos obrigatórios!");
         return;
     }
 
-    let mensagem = `*Pedido do(a) ${nome}*\nEndereço: ${endereco}\nPagamento: ${pagamento}\n\nItens:\n`;
+    let mensagem = `*Pedido do(a) ${nome}*\nEndereço: ${endereco}\nTelefone: ${telefone}\nPagamento: ${pagamento}\n`;
+    if (precisaTroco) mensagem += `Troco para: R$ ${valorTroco.toFixed(2)}\n`;
+    mensagem += `\nItens:\n`;
+
     let subtotal = 0;
 
     carrinho.forEach(item => {
         let precoItem = item.precoBase;
         let adicionaisText = "";
-        for(let ad in item.adicionais) {
+        for (let ad in item.adicionais) {
             const precoAd = adicionais.find(a => a.nome === ad).preco;
             precoItem += precoAd * item.adicionais[ad];
             adicionaisText += `${ad} x${item.adicionais[ad]}, `;
         }
-        if(adicionaisText) adicionaisText = " (" + adicionaisText.slice(0, -2) + ")";
+        if (adicionaisText) adicionaisText = " (" + adicionaisText.slice(0, -2) + ")";
         const totalItem = precoItem * item.qtd;
         subtotal += totalItem;
         mensagem += `- ${item.nome} x${item.qtd}${adicionaisText} - R$ ${totalItem.toFixed(2)}\n`;
     });
 
-    // Taxa fixa de entrega
     const taxaEntrega = 7;
-    const total = subtotal + taxaEntrega;
-    mensagem += `\nTaxa de entrega: R$ ${taxaEntrega.toFixed(2)}`;
-    mensagem += `\n*Total: R$ ${total.toFixed(2)}*`;
+    let totalFinal = subtotal + taxaEntrega;
+
+    // Se houver troco, calcular diferença
+    if (precisaTroco && valorTroco > totalFinal) {
+        const trocoCalculado = valorTroco - totalFinal;
+        mensagem += `\nSubtotal + Taxa: R$ ${totalFinal.toFixed(2)}\nTroco: R$ ${trocoCalculado.toFixed(2)}\n*Total a receber: R$ ${valorTroco.toFixed(2)}*`;
+    } else {
+        mensagem += `\nTaxa de entrega: R$ ${taxaEntrega.toFixed(2)}\n*Total: R$ ${totalFinal.toFixed(2)}*`;
+    }
 
     const whatsapp = `https://api.whatsapp.com/send?phone=${numeroLoja}&text=${encodeURIComponent(mensagem)}`;
     window.open(whatsapp, "_blank");
